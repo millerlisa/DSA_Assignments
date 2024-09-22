@@ -1,11 +1,12 @@
-// Purpose: This program simulates a movie theatre reservation system. The user can reserve a seat, cancel a reservation, or exit the program.
-import java.util.ArrayList;
+// This uses the two dimension array.
 import java.util.Scanner;
 
-public class MovieTheatreReservation {
+public class MovieTheatreReservationArray {
+    // ROWS & COLS are the number of rows and columns in the theatre, they are constants, that's why they are in uppercase
     static final int ROWS = 5;
     static final int COLS = 5;
-    static ArrayList<ArrayList<Integer>> seats = new ArrayList<>();
+    // seats is a 2D array that represents the seats in the theatre
+    static int[][] seats = new int[ROWS][COLS];
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -38,27 +39,28 @@ public class MovieTheatreReservation {
         }
     }
 
+    // Sets all the seats in the theatre to 0, which means they are all available
     public static void initializeSeats() {
         for (int i = 0; i < ROWS; i++) {
-            ArrayList<Integer> row = new ArrayList<>();
             for (int j = 0; j < COLS; j++) {
-                row.add(0);
+                seats[i][j] = 0;
             }
-            seats.add(row);
         }
     }
 
+    // Displays the current seat arrangement in the theatre. [ ] means the seat is available, [X] means the seat is reserved    
     public static void displaySeats() {
         System.out.println("Current seat arrangement:");
         System.out.println();
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
-                System.out.print(seats.get(i).get(j) == 0 ? "[ ]" : "[X]");
+                System.out.print(seats[i][j] == 0 ? "[ ]" : "[X]");
             }
             System.out.println();
         }
     }
 
+    // Prompts the user to enter the row and column number of the seat they want to reserve, then reserves the seat if it's available & displays seat arrangement. If the seat is already reserved, it offers an alternative seat. See offerAlternativeSeat() method for more details.
     public static void reserveSeat() {
         System.out.println("Enter row number (1-5) to reserve: ");
         int row = scanner.nextInt() - 1;
@@ -66,9 +68,10 @@ public class MovieTheatreReservation {
         int col = scanner.nextInt() - 1;
         
         if (isValidSeat(row, col)) {
-            if (seats.get(row).get(col) == 0) {
-                seats.get(row).set(col, 1);
+            if (seats[row][col] == 0) {
+                seats[row][col] = 1;
                 System.out.println("Seat reserved successfully.");
+                // displaySeats();
             } else {
                 System.out.println();
                 System.out.println("Seat already reserved. Below, see seat availability:");
@@ -79,14 +82,15 @@ public class MovieTheatreReservation {
         }
     }
 
+    // Prompts the user to enter the row and column number of the seat they want to cancel, then cancels the reservation if it exists & displays seat arrangement.
     public static void cancelReservation() {
         System.out.println("Enter row and column (1-5) to cancel:");
         int row = scanner.nextInt() - 1;
         int col = scanner.nextInt() - 1;
         
         if (isValidSeat(row, col)) {
-            if (seats.get(row).get(col) == 1) {
-                seats.get(row).set(col, 0);
+            if (seats[row][col] == 1) {
+                seats[row][col] = 0;
                 System.out.println("Reservation cancelled.");
                 displaySeats();
             } else {
@@ -97,15 +101,17 @@ public class MovieTheatreReservation {
         }
     }
 
+    // Checks if the row and column number entered by the user is valid
     public static boolean isValidSeat(int row, int col) {
         return row >= 0 && row < ROWS && col >= 0 && col < COLS;
     }
 
+    // Offers an alternative seat to the user if the seat they want to reserve is already reserved
     public static void offerAlternativeSeat() {
         int count = 0;
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
-                if (seats.get(i).get(j) == 0) {
+                if (seats[i][j] == 0) {
                     System.out.println("Available seat: Row " + (i + 1) + ", Column " + (j + 1));
                     count++;
                     
